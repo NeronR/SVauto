@@ -33,20 +33,6 @@ UI::UI(QWidget *parent) : QMainWindow(parent)
     OutList = new OutInvoiceList(Utils::OPENED_OUTINVOICES_FOLDER);
     OutClosedList = new OutInvoiceList(Utils::CLOSED_OUTINVOICES_FOLDER);
 
-    //
-    CarIDs CIDS;
-    CIDS.AddBrand("Opel");
-    CIDS.AddModel(0, "Astra");
-    CIDS.AddModel(0, "Jetta");
-    CIDS.AddVersion(0, 0, "1");
-    CIDS.AddVersion(0,0,"1/1/");
-    qDebug()<<CIDS.GetBrands();
-    qDebug()<<CIDS.GetModels(0);
-    qDebug()<<CIDS.GetVersions(0,0);
-    qDebug()<<CIDS.GetVersions(0,1);
-    qDebug()<<CarIDs::GetCarID(1,1,1);
-    //
-
     ShowMainWindow();
 }
 void UI::ShowMainWindow()

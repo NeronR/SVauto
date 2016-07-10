@@ -35,10 +35,14 @@ public:
     static const QString XML_LAST_ID_TAG;
     static const QString XML_SERVICE_TAG;
     static const long long int CAR_MAX_ID;
+    static const QString XML_BRAND_TAG;
+    static const QString XML_MODEL_TAG;
+    static const QString XML_VERSION_TAG;
     static const QString DATETIME_FORMAT;
     static const QString DATETIME_VISIBLE_FORMAT;
     static const QString STORAGE_FILENAME;
     static const QString SERVICES_FILENAME;
+    static const QString CARIDS_FILENAME;
     static const QString OPENED_ININVOICES_FOLDER;
     static const QString CLOSED_ININVOICES_FOLDER;
     static const QString OPENED_OUTINVOICES_FOLDER;

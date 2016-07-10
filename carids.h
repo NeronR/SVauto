@@ -3,6 +3,13 @@
 
 #include <QMap>
 #include <QList>
+#include <QDomElement>
+#include <QFile>
+#include <QTextStream>
+#include <QDebug>
+#include <QMessageBox>
+
+#include "utils.h"
 
 class CarIDs
 {
@@ -16,6 +23,73 @@ public:
     static const short MODEL_ID_NUMBERS;
     static const short VERSION_ID_NUMBERS;
 
+    CarIDs(){}
+    CarIDs(QDomElement* IElement);
+    void Save()
+    {
+        QDomDocument Document;
+        QFile OutputFile(Utils::CARIDS_FILENAME+Utils::FILENAME_EXTENSION);
+        OutputFile.open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream OutStream(&OutputFile);
+        Document.appendChild(ToXML(&Document));
+        OutStream << Document.toString();
+        OutputFile.close();
+    }
+    void Load()
+    {
+        QFile InputFile(Utils::CARIDS_FILENAME+Utils::FILENAME_EXTENSION);
+        InputFile.open(QIODevice::ReadOnly | QIODevice::Text);
+        QDomDocument Document;
+        Document.setContent(&InputFile);
+        InputFile.close();
+
+        QDomElement Root = Document.documentElement();
+        QDomNode NodeBrand = Root.firstChild();
+        QDomElement Element;
+        while(!NodeBrand.isNull())
+        { //Brands cycle
+            Element = NodeBrand.toElement();
+
+            if(Element.tagName() == Utils::XML_BRAND_TAG && Element.hasAttribute(Utils::XML_NAME_TAG))
+                AddBrand(Element.attribute(Utils::XML_NAME_TAG));
+            else
+                QMessageBox::about(0,"ERROR!","XML_BRAND_TAG ERROR");
+
+            QDomNode NodeModel = NodeBrand.firstChild();
+            while(!NodeModel.isNull())
+            { //Models cycle
+                Element = NodeModel.toElement();
+
+                if(Element.tagName() == Utils::XML_MODEL_TAG && Element.hasAttribute(Utils::XML_NAME_TAG))
+                    AddModel(Brands.size() - 1, Element.attribute(Utils::XML_NAME_TAG));
+                else
+                    QMessageBox::about(0,"ERROR!","XML_MODEL_TAG ERROR");
+
+                QDomNode NodeVersion = NodeModel.firstChild();
+                while(!NodeVersion.isNull())
+                { //Versions cycle
+                    Element = NodeVersion.toElement();
+
+                    if(Element.tagName() == Utils::XML_VERSION_TAG && Element.hasAttribute(Utils::XML_NAME_TAG))
+                        AddVersion(Brands.size() - 1, Brands.last().Models->size() - 1,
+                                   Element.attribute(Utils::XML_NAME_TAG));
+                    else
+                        QMessageBox::about(0,"ERROR!","XML_VERSION_TAG ERROR");
+
+                    NodeVersion = NodeVersion.nextSibling();
+                }
+                NodeModel = NodeModel.nextSibling();
+            }
+            /*if(!((Element = Node.toElement()).isNull()) && Element.tagName()==Utils::XML_OUT_ITEM_TAG)
+            {
+                OutItem NewItem(&Element);
+                *this << NewItem;
+            }
+            else
+                QMessageBox::about(0,"ERROR!","NOT XML_OUT_ITEM_TAG");*/
+            NodeBrand = NodeBrand.nextSibling();
+        }
+    }
     void AddBrand(QString IName)
     {
         BrandNode NewBrand;
@@ -70,8 +144,7 @@ public:
             VersionID = "0" + VersionID;
         return BrandID + ModelID + VersionID;
     }
-
-    //CarIDs();
+    QDomElement ToXML(QDomDocument* IDocument);
 };
 
 #endif // CARIDS_H
