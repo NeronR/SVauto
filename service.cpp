@@ -1,6 +1,8 @@
 #include "service.h"
 #include "services.h"
+#include "carids.h"
 #include <QDomDocument>
+#include <QDebug>
 
 Service::Service(QDomElement *IElement) : Service()
 {
@@ -12,10 +14,17 @@ Service::Service(QDomElement *IElement) : Service()
             Name = IElement->attribute(Utils::XML_NAME_TAG);
         if(IElement->hasAttribute(Utils::XML_BARCODE_TAG))
             Barcode = IElement->attribute(Utils::XML_BARCODE_TAG);
-        for(int i=0; i<(Utils::CAR_MAX_ID + 1); ++i)
+        QDomNode PriceNode = IElement->firstChild();
+        while(!PriceNode.isNull())
         {
-            if(IElement->hasAttribute(Utils::XML_SELLING_PRICE_TAG + QString::number(i)))
-                Price[i] = Utils::StringMoneyToInt(IElement->attribute(Utils::XML_SELLING_PRICE_TAG + QString::number(i)));
+            QDomElement PriceElement = PriceNode.toElement();
+            if(PriceElement.tagName() == Utils::XML_SELLING_PRICE_TAG && PriceElement.hasAttribute(Utils::XML_ID_TAG) &&
+                    PriceElement.hasAttribute(Utils::XML_SELLING_PRICE_TAG))
+                Price.insert(PriceElement.attribute(Utils::XML_ID_TAG).toLongLong(),
+                             Utils::StringMoneyToInt(PriceElement.attribute(Utils::XML_SELLING_PRICE_TAG)));
+            else
+                QMessageBox::about(0, "ERROR!", "XML_SELLING_PRICE_TAG ERROR");
+            PriceNode = PriceNode.nextSibling();
         }
         if(IElement->hasAttribute(Utils::XML_DESCRIPTION_TAG))
             Description = IElement->attribute(Utils::XML_DESCRIPTION_TAG);
@@ -27,9 +36,14 @@ QDomElement Service::ToXML(QDomDocument *IDocument)
     Element.setAttribute(Utils::XML_ID_TAG, ID);
     Element.setAttribute(Utils::XML_NAME_TAG, Name);
     Element.setAttribute(Utils::XML_BARCODE_TAG, Barcode);
-    for(int i=0; i<(Utils::CAR_MAX_ID + 1); ++i)
+    QMap<long long int, long long int>::const_iterator i = Price.constBegin();
+    while(i != Price.constEnd())
     {
-        Element.setAttribute(Utils::XML_SELLING_PRICE_TAG + QString::number(i), Utils::IntMoneyToString(Price[i]));
+        QDomElement PriceElement = IDocument->createElement(Utils::XML_SELLING_PRICE_TAG);
+        PriceElement.setAttribute(Utils::XML_ID_TAG, CarIDs::IntCarIDToString(i.key()));
+        PriceElement.setAttribute(Utils::XML_SELLING_PRICE_TAG, Utils::IntMoneyToString(i.value()));
+        Element.appendChild(PriceElement);
+        ++i;
     }
     Element.setAttribute(Utils::XML_DESCRIPTION_TAG, Description);
     return Element;

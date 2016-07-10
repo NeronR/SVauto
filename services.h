@@ -5,6 +5,9 @@
 #include <QString>
 #include <QList>
 
+//TODO:
+//Check ID when adding new service
+
 class Services
 {
 public:
