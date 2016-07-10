@@ -14,6 +14,9 @@
 #include <QMenuBar>
 #include <QAction>
 
+//TODO:
+//Add checks for editing non-editable items
+
 StorageTable::StorageTable(UI *Iparent, bool IEditable) : QTableWidget(Iparent), Parent(Iparent)
 {
     if(!Iparent)
@@ -120,7 +123,7 @@ void StorageTable::CellChanged(int IRow, int IColumn)
             if(!ConvertedBarcode.isEmpty())
                 TargetItem->SetBarcode(ConvertedBarcode);
             else
-                QMessageBox::about(0,"ERROR!","Incorrect Barcode");
+                QMessageBox::about(0,"ERROR!","Некорректный штрих-код");
         }
         else
             QMessageBox::about(0,"WARNING","Товар с таким штрих-кодом уже существует");
@@ -141,7 +144,7 @@ void StorageTable::CellChanged(int IRow, int IColumn)
         if(!ConvertedPrice.isEmpty())
             TargetItem->SetLastPurchasePrice(ConvertedPrice);
         else
-            QMessageBox::about(0,"ERROR!","Incorrect Price");
+            QMessageBox::about(0,"ERROR!","Некорректная цена");
         item(IRow,IColumn)->setText(TargetItem->GetLastPurchasePriceString());
         if(SellingPriceColumnNumber>-1)
             item(IRow,SellingPriceColumnNumber)->setText(TargetItem->GetSellingPriceString());
@@ -152,7 +155,7 @@ void StorageTable::CellChanged(int IRow, int IColumn)
         if(!ConvertedMarkup.isEmpty())
             TargetItem->SetMarkup(ConvertedMarkup);
         else
-            QMessageBox::about(0,"ERROR!","Incorrect Markup");
+            QMessageBox::about(0,"ERROR!","Некорректная наценка");
         item(IRow,IColumn)->setText(TargetItem->GetMarkupString());
         if(SellingPriceColumnNumber>-1)
             item(IRow,SellingPriceColumnNumber)->setText(TargetItem->GetSellingPriceString());
@@ -168,12 +171,12 @@ void StorageTable::CellChanged(int IRow, int IColumn)
                 QMessageBox::about(0,"WARNING","Цена продажи не может быть меньше закупочной");
         }
         else
-            QMessageBox::about(0,"ERROR!","Incorrect Price");
+            QMessageBox::about(0,"ERROR!","Некорректная цена");
         item(IRow,IColumn)->setText(TargetItem->GetSellingPriceString());
         if (MarkupColumnNumber>-1)
             item(IRow,MarkupColumnNumber)->setText(TargetItem->GetMarkupString());
     }
-    MainStorage->Save("Storage.xml");
+    MainStorage->Save(Utils::STORAGE_FILENAME + Utils::FILENAME_EXTENSION);
     connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(CellChanged(int,int)));
 }
 void StorageTable::Add()
@@ -201,7 +204,7 @@ void StorageTable::Add()
         QPushButton* PB = new QPushButton("X");
         setCellWidget(rowCount()-1,DescriptionColumnNumber,PB);
         setSortingEnabled(true);
-        MainStorage->Save("Storage.xml");
+        MainStorage->Save(Utils::STORAGE_FILENAME + Utils::FILENAME_EXTENSION);
         connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(CellChanged(int,int)));
     }
 }

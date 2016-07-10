@@ -1,7 +1,7 @@
-#ifndef STORAGETABLE_H
-#define STORAGETABLE_H
+#ifndef SERVICESTABLE_H
+#define SERVICESTABLE_H
 
-#include "storage.h"
+#include "services.h"
 #include "ui.h"
 
 #include <QTableWidget>
@@ -9,26 +9,23 @@
 
 class UI;
 
-class StorageTable : public QTableWidget
+class ServicesTable : public QTableWidget
 {
     Q_OBJECT
 public:
-    StorageTable(UI* Iparent, bool IEditable = false);
-    ~StorageTable();
-    void keyPressEvent(QKeyEvent *event);
+    ServicesTable(UI* IParent, bool IEditable = false);
+    ~ServicesTable();
+    void keyPressEvent(QKeyEvent* event);
     QMenuBar* MenuBar;
 private:
-    Storage* MainStorage;
+    Services* MainServices;
     UI* Parent;
     bool Editable;
 
     int IDColumnNumber;
     int NameColumnNumber;
     int BarcodeColumnNumber;
-    int QuantityColumnNumber;
-    int PurchasePriceColumnNumber;
-    int MarkupColumnNumber;
-    int SellingPriceColumnNumber;
+    int PriceColumnNumber;
     int DescriptionColumnNumber;
 private slots:
     void CellChanged(int IRow, int IColumn);
@@ -38,4 +35,4 @@ private slots:
     void Close();
 };
 
-#endif // STORAGETABLE_H
+#endif // SERVICESTABLE_H

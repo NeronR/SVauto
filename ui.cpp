@@ -24,16 +24,20 @@ UI::UI(QWidget *parent) : QMainWindow(parent)
     PSettings = new Settings("Settings.xml");
 
     MainStorage = new Storage(Utils::STORAGE_FILENAME + Utils::FILENAME_EXTENSION);
-    //MainServices = new Services(Utils::SERVICES_FILENAME + Utils::FILENAME_EXTENSION);
-    //MainServices->AddNew();
-    //MainServices->Save(Utils::SERVICES_FILENAME + Utils::FILENAME_EXTENSION);
+
+    MainServices = new Services(Utils::SERVICES_FILENAME + Utils::FILENAME_EXTENSION);
+    MainServices->Save(Utils::SERVICES_FILENAME + Utils::FILENAME_EXTENSION);
 
     InList = new InInvoiceList(Utils::OPENED_ININVOICES_FOLDER);
     InClosedList = new InInvoiceList(Utils::CLOSED_ININVOICES_FOLDER);
     OutList = new OutInvoiceList(Utils::OPENED_OUTINVOICES_FOLDER);
     OutClosedList = new OutInvoiceList(Utils::CLOSED_OUTINVOICES_FOLDER);
 
+
     ShowMainWindow();
+
+    //TEST
+    ShowEditServicesTable();
 }
 void UI::ShowMainWindow()
 {
@@ -49,7 +53,7 @@ void UI::ShowMainWindow()
 }
 void UI::ShowStorageTable()
 {
-    setCentralWidget(new StorageTable(this));
+    setCentralWidget(new StorageTable(this, false));
     centralWidget()->show();
     centralWidget()->setFocus();
     setMenuBar(((StorageTable*)centralWidget())->MenuBar);
@@ -60,6 +64,20 @@ void UI::ShowEditStorageTable()
     centralWidget()->show();
     centralWidget()->setFocus();
     setMenuBar(((StorageTable*)centralWidget())->MenuBar);
+}
+void UI::ShowServicesTable()
+{
+    setCentralWidget(new ServicesTable(this, false));
+    centralWidget()->show();
+    centralWidget()->setFocus();
+    setMenuBar(((ServicesTable*)centralWidget())->MenuBar);
+}
+void UI::ShowEditServicesTable()
+{
+    setCentralWidget(new ServicesTable(this, true));
+    centralWidget()->show();
+    centralWidget()->setFocus();
+    setMenuBar(((ServicesTable*)centralWidget())->MenuBar);
 }
 void UI::ShowInTable()
 {

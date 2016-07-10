@@ -28,7 +28,8 @@ SOURCES += main.cpp \
     service.cpp \
     utils.cpp \
     services.cpp \
-    carids.cpp
+    carids.cpp \
+    servicestable.cpp
 
 HEADERS  += \
     ui.h \
@@ -52,4 +53,5 @@ HEADERS  += \
     service.h \
     utils.h \
     services.h \
-    carids.h
+    carids.h \
+    servicestable.h

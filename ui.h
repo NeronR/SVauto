@@ -4,6 +4,7 @@
 #include "storage.h"
 #include "services.h"
 #include "storagetable.h"
+#include "servicestable.h"
 #include "ininvoice.h"
 #include "intable.h"
 #include "inlisttable.h"
@@ -44,6 +45,8 @@ public slots:
     void ShowMainWindow();
     void ShowStorageTable();
     void ShowEditStorageTable();
+    void ShowServicesTable();
+    void ShowEditServicesTable();
     void ShowInTable();
     void ShowOutTable();
     void ShowInListTable();
