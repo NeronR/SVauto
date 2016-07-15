@@ -58,10 +58,10 @@ void UI::ShowMainWindow()
     centralWidget()->setFocus();
     DockWidget->setWindowTitle("");
 
-    InList->Load("InInvoices");
-    InClosedList->Load("ClosedInInvoices");
-    OutList->Load(Utils::OPENED_OUTINVOICES_FOLDER);
-    OutClosedList->Load(Utils::CLOSED_OUTINVOICES_FOLDER);
+    //InList->Load("InInvoices");
+    //InClosedList->Load("ClosedInInvoices");
+    //OutList->Load(Utils::OPENED_OUTINVOICES_FOLDER);
+    //OutClosedList->Load(Utils::CLOSED_OUTINVOICES_FOLDER);
 }
 void UI::ShowStorageTable()
 {

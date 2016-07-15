@@ -31,6 +31,8 @@ public slots:
     void Deapply();
     void Delete();
     void Close();
+signals:
+    void Closing();
 };
 
 #endif // INTABLE_H

@@ -1,12 +1,14 @@
 #include "outinvoicelist.h"
 #include <QDir>
 
-OutInvoiceList::OutInvoiceList(QString IFolderName)
+OutInvoiceList::OutInvoiceList(QString IFolderName) : FolderName(IFolderName)
 {
     Load(IFolderName);
 }
 void OutInvoiceList::Load(QString IFolderName)
 {
+    if(IFolderName.isEmpty())
+        IFolderName = FolderName;
     InvoiceList.clear();
     QDir Dir(IFolderName);
     QStringList DirList = Dir.entryList();

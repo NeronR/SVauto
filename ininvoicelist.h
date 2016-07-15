@@ -16,6 +16,7 @@ public:
     QString GetNextID();
 private:
     QList<InInvoice> InvoiceList;
+    QString FolderName;
 };
 
 #endif // ININVOICELIST_H

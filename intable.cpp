@@ -224,5 +224,6 @@ void InTable::Close()
 {
     Parent->PopDockTitle();
     delete DockWidget;
+    emit Closing();
     delete this;
 }

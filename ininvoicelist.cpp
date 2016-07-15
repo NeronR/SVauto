@@ -5,12 +5,16 @@
 #include <QStringList>
 #include <QDebug>
 
-InInvoiceList::InInvoiceList(QString IFolderName)
+InInvoiceList::InInvoiceList(QString IFolderName) : FolderName(IFolderName)
 {
     Load(IFolderName);
 }
 void InInvoiceList::Load(QString IFolderName)
 {
+    if(IFolderName.isEmpty())
+    {
+        IFolderName = FolderName;
+    }
     InvoiceList.clear();
     QDir Dir(IFolderName);
     QStringList DirList = Dir.entryList();

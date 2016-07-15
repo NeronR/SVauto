@@ -18,6 +18,7 @@ InListTable::InListTable(UI* IParent, InInvoiceList* IList) : QTableWidget(IPare
     setColumnCount(ColumnNumberCounter);
     if(!List)
         List = Parent->InList;
+    List->Load("");
     QStringList SList;
     SList << "ID" << "Дата" << "Сумма";
     setHorizontalHeaderLabels(SList);
@@ -50,9 +51,16 @@ InListTable::InListTable(UI* IParent, InInvoiceList* IList) : QTableWidget(IPare
 }
 void InListTable::CellDoubleClick(int IRow)
 {
-    Parent->MainWidget->setCurrentIndex(Parent->MainWidget->addWidget(new InTable(Parent, new InInvoice(item(IRow,IDColumnNumber)->text()), true)));
+    InTable* Table = new InTable(Parent, new InInvoice(item(IRow,IDColumnNumber)->text()), true);
+    connect(Table, SIGNAL(Closing()), this, SLOT(Update()));
+    Parent->MainWidget->setCurrentIndex(Parent->MainWidget->addWidget(Table));
     Parent->centralWidget()->show();
     Parent->centralWidget()->setFocus();
+}
+void InListTable::Update()
+{
+    Parent->MainWidget->insertWidget((Parent->MainWidget->indexOf(this)), new InListTable(Parent, List));
+    Close();
 }
 void InListTable::Close()
 {

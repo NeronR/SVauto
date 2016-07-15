@@ -17,6 +17,7 @@ OutListTable::OutListTable(UI* IParent, OutInvoiceList* IList) : QTableWidget(IP
     setColumnCount(ColumnNumberCounter);
     if(!List)
         List = Parent->OutList;
+    List->Load("");
     QStringList SList;
     SList << "ID" << "Дата" << "Сумма";
     setHorizontalHeaderLabels(SList);
@@ -49,10 +50,16 @@ OutListTable::OutListTable(UI* IParent, OutInvoiceList* IList) : QTableWidget(IP
 }
 void OutListTable::CellDoubleClick(int IRow)
 {
-    //Parent->setCentralWidget(new OutTable(Parent, new OutInvoice(item(IRow,IDColumnNumber)->text()), true));
-    Parent->MainWidget->addWidget(new OutTable(Parent, new OutInvoice(item(IRow,IDColumnNumber)->text()), true));
+    OutTable* Table = new OutTable(Parent, new OutInvoice(item(IRow,IDColumnNumber)->text()), true);
+    connect(Table, SIGNAL(Closing()), this, SLOT(Update()));
+    Parent->MainWidget->setCurrentIndex(Parent->MainWidget->addWidget(Table));
     Parent->centralWidget()->show();
     Parent->centralWidget()->setFocus();
+}
+void OutListTable::Update()
+{
+    Parent->MainWidget->insertWidget((Parent->MainWidget->indexOf(this)), new OutListTable(Parent, List));
+    Close();
 }
 void OutListTable::Close()
 {

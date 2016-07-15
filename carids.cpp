@@ -1,5 +1,3 @@
-#include <QGridLayout>
-
 #include "carids.h"
 #include "utils.h"
 

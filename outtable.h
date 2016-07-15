@@ -29,6 +29,8 @@ public slots:
     void Deapply();
     void Delete();
     void Close();
+signals:
+    void Closing();
 };
 
 #endif // OUTTABLE_H

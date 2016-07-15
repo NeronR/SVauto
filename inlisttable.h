@@ -19,6 +19,7 @@ private:
     int TotalColumnNumber;
 private slots:
     void CellDoubleClick(int IRow);
+    void Update();
     void Close();
 };
 

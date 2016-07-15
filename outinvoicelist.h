@@ -14,6 +14,7 @@ public:
     int SearchByID(QString IID);
     int Size() {return InvoiceList.size();}
     QString GetNextID();
+    QString FolderName;
 private:
     QList<OutInvoice> InvoiceList;
 
