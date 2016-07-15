@@ -4,7 +4,6 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QHeaderView>
-#include <QMenuBar>
 #include <QAction>
 
 InListTable::InListTable(UI* IParent, InInvoiceList* IList) : QTableWidget(IParent), Parent(IParent),
@@ -40,15 +39,24 @@ InListTable::InListTable(UI* IParent, InInvoiceList* IList) : QTableWidget(IPare
     setSortingEnabled(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     connect(this,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(CellDoubleClick(int)));
-    MenuBar = new QMenuBar(this);
-    QAction* CloseAction = new QAction("Назад", MenuBar);
-    connect(CloseAction,SIGNAL(triggered(bool)),Parent,SLOT(ShowMainWindow()));
-    MenuBar->addAction(CloseAction);
+
+    DockWidget = new QWidget;
+    QHBoxLayout* DockLayout = new QHBoxLayout(DockWidget);
+    QPushButton* CloseButton = new QPushButton("Назад");
+    connect(CloseButton, SIGNAL(clicked(bool)), this, SLOT(Close()));
+    DockLayout->addWidget(CloseButton, 0, Qt::AlignRight);
+    Parent->PushDockTitle("Список приходов");
+    Parent->DockMainWidget->setCurrentIndex(Parent->DockMainWidget->addWidget(DockWidget));
 }
 void InListTable::CellDoubleClick(int IRow)
 {
-    Parent->setCentralWidget(new InTable(Parent, new InInvoice(item(IRow,IDColumnNumber)->text()), true));
+    Parent->MainWidget->setCurrentIndex(Parent->MainWidget->addWidget(new InTable(Parent, new InInvoice(item(IRow,IDColumnNumber)->text()), true)));
     Parent->centralWidget()->show();
     Parent->centralWidget()->setFocus();
-    Parent->setMenuBar(((InTable*)Parent->centralWidget())->MenuBar);
+}
+void InListTable::Close()
+{
+    Parent->PopDockTitle();
+    delete DockWidget;
+    delete this;
 }

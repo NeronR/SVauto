@@ -3,7 +3,6 @@
 
 #include "ui.h"
 #include <QTableWidget>
-#include <QMenuBar>
 #include <QLabel>
 
 class UI;
@@ -13,7 +12,6 @@ class InTable : public QTableWidget
     Q_OBJECT
 public:
     InTable(UI* parent, InInvoice* IInvoice, bool IEditable = false);
-    QMenuBar* MenuBar;
 private:
     int IDColumnNumber;
     int NameColumnNumber;
@@ -25,13 +23,14 @@ private:
     QString ReadedString;
     bool Editable;
     UI* Parent;
-    QAction* ApplyAction;
     QLabel* TotalLabel;
+    QWidget* DockWidget;
 public slots:
     void CellChanged(int IRow, int IColumn);
     void Apply();
     void Deapply();
     void Delete();
+    void Close();
 };
 
 #endif // INTABLE_H

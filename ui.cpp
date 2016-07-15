@@ -6,6 +6,8 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 
+#include <QDockWidget>
+
 #include "ui.h"
 #include "storagetable.h"
 #include "services.h"
@@ -19,107 +21,107 @@
 
 UI::UI(QWidget *parent) : QMainWindow(parent)
 {
+    MainWidget = new QStackedWidget;
+    setCentralWidget(MainWidget);
+
     CurrentUser = new User("Иван", "Иванович", "Иванов", "333");
     CurrentUser->SetPermission(User::PERMISSION_EDIT_CLOSED_INIVOICES, true);
     PSettings = new Settings("Settings.xml");
 
     MainStorage = new Storage(Utils::STORAGE_FILENAME + Utils::FILENAME_EXTENSION);
-
     MainServices = new Services(Utils::SERVICES_FILENAME + Utils::FILENAME_EXTENSION);
-    MainServices->Save(Utils::SERVICES_FILENAME + Utils::FILENAME_EXTENSION);
 
     InList = new InInvoiceList(Utils::OPENED_ININVOICES_FOLDER);
     InClosedList = new InInvoiceList(Utils::CLOSED_ININVOICES_FOLDER);
     OutList = new OutInvoiceList(Utils::OPENED_OUTINVOICES_FOLDER);
     OutClosedList = new OutInvoiceList(Utils::CLOSED_OUTINVOICES_FOLDER);
 
+    MainCarIDs = new CarIDs;
+    MainCarIDs->Load();
+
+    DockWidget = new QDockWidget("", this);
+    DockWidget->setAllowedAreas(Qt::TopDockWidgetArea);
+    addDockWidget(Qt::TopDockWidgetArea, DockWidget);
+    DockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    DockMainWidget = new QStackedWidget;
+    DockWidget->setWidget(DockMainWidget);
 
     ShowMainWindow();
 
     //TEST
-    ShowEditServicesTable();
+
 }
 void UI::ShowMainWindow()
 {
-    setCentralWidget(new MainScreen(this));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new MainScreen(this)));
     centralWidget()->show();
     centralWidget()->setFocus();
+    DockWidget->setWindowTitle("");
+
     InList->Load("InInvoices");
     InClosedList->Load("ClosedInInvoices");
     OutList->Load(Utils::OPENED_OUTINVOICES_FOLDER);
     OutClosedList->Load(Utils::CLOSED_OUTINVOICES_FOLDER);
-    if(menuBar())
-        delete menuBar();
 }
 void UI::ShowStorageTable()
 {
-    setCentralWidget(new StorageTable(this, false));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new StorageTable(this, false)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((StorageTable*)centralWidget())->MenuBar);
 }
 void UI::ShowEditStorageTable()
 {
-    setCentralWidget(new StorageTable(this, true));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new StorageTable(this, true)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((StorageTable*)centralWidget())->MenuBar);
 }
 void UI::ShowServicesTable()
 {
-    setCentralWidget(new ServicesTable(this, false));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new ServicesTable(this, false)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((ServicesTable*)centralWidget())->MenuBar);
 }
 void UI::ShowEditServicesTable()
 {
-    setCentralWidget(new ServicesTable(this, true));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new ServicesTable(this, true)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((ServicesTable*)centralWidget())->MenuBar);
 }
 void UI::ShowInTable()
 {
-    setCentralWidget(new InTable(this, 0, true));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new InTable(this, 0, true)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((InTable*)centralWidget())->MenuBar);
 }
 void UI::ShowOutTable()
 {
-    setCentralWidget(new OutTable(this, 0, true));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new OutTable(this, 0, true)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((OutTable*)centralWidget())->MenuBar);
 }
 void UI::ShowInListTable()
 {
-    setCentralWidget(new InListTable(this));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new InListTable(this)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((InListTable*)centralWidget())->MenuBar);
 }
 void UI::ShowInClosedListTable()
 {
-    setCentralWidget(new InListTable(this, InClosedList));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new InListTable(this, InClosedList)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((InListTable*)centralWidget())->MenuBar);
 }
 void UI::ShowOutListTable()
 {
-    setCentralWidget(new OutListTable(this));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new OutListTable(this)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((OutListTable*)centralWidget())->MenuBar);
 }
 void UI::ShowOutClosedListTable()
 {
-    setCentralWidget(new OutListTable(this, OutClosedList));
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new OutListTable(this, OutClosedList)));
     centralWidget()->show();
     centralWidget()->setFocus();
-    setMenuBar(((OutListTable*)centralWidget())->MenuBar);
 }
 void UI::ShowSettingsWidget()
 {}
@@ -138,3 +140,16 @@ bool UI::OKCancelWindow(QString ITitle, QString IText)
 }
 void UI::closeEvent(QCloseEvent *)
 {}
+void UI::PushDockTitle(QString ITitle)
+{
+    DockTitleStack.push(ITitle);
+    DockWidget->setWindowTitle(ITitle);
+}
+void UI::PopDockTitle()
+{
+    DockTitleStack.pop();
+    if(DockTitleStack.isEmpty())
+        DockWidget->setWindowTitle("");
+    else
+        DockWidget->setWindowTitle(DockTitleStack.top());
+}

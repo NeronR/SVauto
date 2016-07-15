@@ -11,12 +11,18 @@
 
 #include "utils.h"
 
+//TODO:
+//Check IDs for existing
+
+class UI;
+
 class CarIDs
 {
 public:
     struct VersionNode {QString Name;};
     struct ModelNode {QString Name; QList<VersionNode>* Versions;};
     struct BrandNode {QString Name; QList<ModelNode>* Models;};
+    struct CarName {QString Brand; QString Model; QString Version;};
     QList<BrandNode> Brands;
 
     static const short BRAND_ID_NUMBERS;
@@ -87,7 +93,7 @@ public:
             VersionID = "0" + VersionID;
         return BrandID + ModelID + VersionID;
     }
-    static long long GetCarIDInt(long IBrandID = 0, long IModelID = 0, long IVersionID = 0)
+    static long long int GetCarIDInt(long IBrandID = 0, long IModelID = 0, long IVersionID = 0)
     {
         return GetCarID(IBrandID, IModelID, IVersionID).toLongLong();
     }
@@ -97,6 +103,25 @@ public:
         while(Answer.size() < (BRAND_ID_NUMBERS + MODEL_ID_NUMBERS + VERSION_ID_NUMBERS))
             Answer = "0" + Answer;
         return Answer;
+    }
+    CarName GetCarNameByStringID(QString ICarID)
+    {
+        QString BrandID, ModelID, VersionID;
+        for(int i=0; i<BRAND_ID_NUMBERS; ++i)
+            BrandID += ICarID[i];
+        for(int i=BRAND_ID_NUMBERS; i<BRAND_ID_NUMBERS + MODEL_ID_NUMBERS; ++i)
+            ModelID += ICarID[i];
+        for(int i=BRAND_ID_NUMBERS + MODEL_ID_NUMBERS; i<BRAND_ID_NUMBERS + MODEL_ID_NUMBERS + VERSION_ID_NUMBERS; ++i)
+            VersionID += ICarID[i];
+        CarName Answer;
+        Answer.Brand = Brands[BrandID.toLong()].Name;
+        Answer.Model = Brands[BrandID.toLong()].Models->at(ModelID.toLong()).Name;
+        Answer.Version = Brands[BrandID.toLong()].Models->at(ModelID.toLong()).Versions->at(VersionID.toLong()).Name;
+        return Answer;
+    }
+    CarName GetCarNameByIntID(long long ICarID)
+    {
+        return GetCarNameByStringID(IntCarIDToString(ICarID));
     }
 
     QDomElement ToXML(QDomDocument* IDocument);

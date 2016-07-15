@@ -11,8 +11,8 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include <QKeyEvent>
-#include <QMenuBar>
 #include <QAction>
+#include <QDockWidget>
 
 //TODO:
 //Add checks for editing non-editable items
@@ -77,19 +77,25 @@ StorageTable::StorageTable(UI *Iparent, bool IEditable) : QTableWidget(Iparent),
         setSortingEnabled(true);
     }
     connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(CellChanged(int,int)));
-    MenuBar = new QMenuBar(this);
+
+    QWidget* DockWidget = new QWidget;
+    QHBoxLayout* DockLayout = new QHBoxLayout(this);
+    DockWidget->setLayout(DockLayout);
     if(Editable)
     {
-        QAction* AddAction = new QAction("Добавить товар", MenuBar);
-        connect(AddAction,SIGNAL(triggered(bool)),this,SLOT(Add()));
-        MenuBar->addAction(AddAction);
-        QAction* DeleteAction = new QAction("Удалить товар", MenuBar);
-        connect(DeleteAction,SIGNAL(triggered(bool)),this,SLOT(RemoveCurrent()));
-        MenuBar->addAction(DeleteAction);
+        QPushButton* AddButton = new QPushButton("Добавить товар");
+        connect(AddButton, SIGNAL(clicked(bool)), this, SLOT(Add()));
+        DockLayout->addWidget(AddButton,0,Qt::AlignLeft);
+        QPushButton* DeleteButton = new QPushButton("Удалить товар");
+        connect(DeleteButton, SIGNAL(clicked(bool)), this, SLOT(RemoveCurrent()));
+        DockLayout->addWidget(DeleteButton,0,Qt::AlignLeft);
     }
-    QAction* CloseAction = new QAction("Назад", MenuBar);
-    connect(CloseAction,SIGNAL(triggered(bool)),Parent,SLOT(ShowMainWindow()));
-    MenuBar->addAction(CloseAction);
+    DockLayout->addStretch();
+    QPushButton* CloseButton = new QPushButton("Назад");
+    connect(CloseButton, SIGNAL(clicked(bool)), this, SLOT(Close()));
+    DockLayout->addWidget(CloseButton, 0, Qt::AlignRight);
+    Parent->DockMainWidget->setCurrentIndex(Parent->DockMainWidget->addWidget(DockWidget));
+    Parent->PushDockTitle(IEditable ? "Список товаров (редактирование)" : "Список товаров");
 }
 StorageTable::~StorageTable()
 {
@@ -129,15 +135,6 @@ void StorageTable::CellChanged(int IRow, int IColumn)
             QMessageBox::about(0,"WARNING","Товар с таким штрих-кодом уже существует");
         item(IRow,IColumn)->setText(TargetItem->GetBarcode());
     }
-    /*if(IColumn == QuantityColumnNumber)
-    {
-        if(StorageItem::IsQuantity(IText))
-            TargetItem->SetQuantity(IText);
-        else
-            QMessageBox::about(0,"ERROR!","Incorrect Quantity");
-        item(IRow,IColumn)->setText(TargetItem->GetQuantityString());
-
-    }*/
     if(IColumn == PurchasePriceColumnNumber)
     {
         QString ConvertedPrice = Utils::StringToPrice(IText);
@@ -228,5 +225,7 @@ void StorageTable::RemoveCurrent()
 }
 void StorageTable::Close()
 {
-    Parent->setCentralWidget(new MainScreen(Parent));
+    Parent->PopDockTitle();
+    delete Parent->DockMainWidget->currentWidget();
+    delete this;
 }

@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     utils.cpp \
     services.cpp \
     carids.cpp \
-    servicestable.cpp
+    servicestable.cpp \
+    servicepricetable.cpp
 
 HEADERS  += \
     ui.h \
@@ -54,4 +55,5 @@ HEADERS  += \
     utils.h \
     services.h \
     carids.h \
-    servicestable.h
+    servicestable.h \
+    servicepricetable.h

@@ -5,7 +5,6 @@
 #include "ui.h"
 
 #include <QTableWidget>
-#include <QMenuBar>
 
 class UI;
 
@@ -16,7 +15,6 @@ public:
     StorageTable(UI* Iparent, bool IEditable = false);
     ~StorageTable();
     void keyPressEvent(QKeyEvent *event);
-    QMenuBar* MenuBar;
 private:
     Storage* MainStorage;
     UI* Parent;

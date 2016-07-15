@@ -3,15 +3,15 @@
 #include <QHeaderView>
 #include <QPushButton>
 #include <QKeyEvent>
+#include <QDockWidget>
 
 //TODO:
 //Add checks for editing non-editable items
 
-ServicesTable::ServicesTable(UI* IParent, bool IEditable) : QTableWidget(IParent), Parent(IParent)
+ServicesTable::ServicesTable(UI* IParent, bool IEditable) : QTableWidget(IParent), Parent(IParent), Editable(IEditable)
 {
     if(!IParent)
         QMessageBox::about(0, "ERROR!", "No parent in ServicesTable");
-    Editable = IEditable;
     int ColumnNumberCounter = 0;
         IDColumnNumber = true ? ColumnNumberCounter++ : -1;
         NameColumnNumber = true ? ColumnNumberCounter++ : -1;
@@ -42,26 +42,33 @@ ServicesTable::ServicesTable(UI* IParent, bool IEditable) : QTableWidget(IParent
         if(!Editable)
             item(rowCount()-1,BarcodeColumnNumber)->setFlags(item(rowCount()-1,BarcodeColumnNumber)->
                                                         flags() & ~Qt::ItemIsEditable);
-        QPushButton* PriceButton = new QPushButton("X");
-        setCellWidget(rowCount()-1,PriceColumnNumber,PriceButton);
+        ServicePointerButton* PriceButton = new ServicePointerButton("X", &((*MainServices)[i]));
+        connect(PriceButton, SIGNAL(Clicked(Service*)), this, SLOT(PriceButtonClicked(Service*)));
+        setCellWidget(rowCount()-1,PriceColumnNumber,PriceButton->Button);
         QPushButton* DescriptionButton = new QPushButton("X");
         setCellWidget(rowCount()-1,DescriptionColumnNumber,DescriptionButton);
         setSortingEnabled(true);
     }
     connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(CellChanged(int,int)));
-    MenuBar = new QMenuBar(this);
+
+    QWidget* DockWidget = new QWidget;
+    QHBoxLayout* DockLayout = new QHBoxLayout(this);
+    DockWidget->setLayout(DockLayout);
     if(Editable)
     {
-        QAction* AddAction = new QAction("Добавить услугу", MenuBar);
-        connect(AddAction,SIGNAL(triggered(bool)),this,SLOT(Add()));
-        MenuBar->addAction(AddAction);
-        QAction* DeleteAction = new QAction("Удалить услугу", MenuBar);
-        connect(DeleteAction,SIGNAL(triggered(bool)),this,SLOT(RemoveCurrent()));
-        MenuBar->addAction(DeleteAction);
+        QPushButton* AddButton = new QPushButton("Добавить услугу");
+        connect(AddButton, SIGNAL(clicked(bool)), this, SLOT(Add()));
+        DockLayout->addWidget(AddButton,0,Qt::AlignLeft);
+        QPushButton* DeleteButton = new QPushButton("Удалить услугу");
+        connect(DeleteButton, SIGNAL(clicked(bool)), this, SLOT(RemoveCurrent()));
+        DockLayout->addWidget(DeleteButton,0,Qt::AlignLeft);
     }
-    QAction* CloseAction = new QAction("Назад", MenuBar);
-    connect(CloseAction,SIGNAL(triggered(bool)),Parent,SLOT(ShowMainWindow()));
-    MenuBar->addAction(CloseAction);
+    DockLayout->addStretch();
+    QPushButton* CloseButton = new QPushButton("Назад");
+    connect(CloseButton, SIGNAL(clicked(bool)), this, SLOT(Close()));
+    DockLayout->addWidget(CloseButton, 0, Qt::AlignRight);
+    Parent->DockMainWidget->setCurrentIndex(Parent->DockMainWidget->addWidget(DockWidget));
+    Parent->PushDockTitle(IEditable ? "Список услуг (редактирование)" : "Список услуг");
 }
 ServicesTable::~ServicesTable()
 {
@@ -101,6 +108,7 @@ void ServicesTable::CellChanged(int IRow, int IColumn)
                 QMessageBox::about(0,"WARNING","Услуга с таким штрих-кодом уже существует");
             item(IRow,IColumn)->setText(TargetItem->GetBarcode());
         }
+        qDebug()<<MainServices;
         MainServices->Save(Utils::SERVICES_FILENAME + Utils::FILENAME_EXTENSION);
         connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(CellChanged(int,int)));
     }
@@ -119,8 +127,9 @@ void ServicesTable::Add()
                                                     flags() & ~Qt::ItemIsEditable);
         setItem(rowCount()-1,NameColumnNumber,new QTableWidgetItem((*MainServices)[i].GetName()));
         setItem(rowCount()-1,BarcodeColumnNumber,new QTableWidgetItem((*MainServices)[i].GetBarcode()));
-        QPushButton* PriceButton = new QPushButton("X");
-        setCellWidget(rowCount()-1,PriceColumnNumber,PriceButton);
+        ServicePointerButton* PriceButton = new ServicePointerButton("X", &((*MainServices)[i]));
+        connect(PriceButton, SIGNAL(Clicked(Service*)), this, SLOT(PriceButtonClicked(Service*)));
+        setCellWidget(rowCount()-1,PriceColumnNumber,PriceButton->Button);
         QPushButton* DescriptionButton = new QPushButton("X");
         setCellWidget(rowCount()-1,DescriptionColumnNumber,DescriptionButton);
         setSortingEnabled(true);
@@ -142,5 +151,14 @@ void ServicesTable::RemoveCurrent()
 }
 void ServicesTable::Close()
 {
-    Parent->setCentralWidget(new MainScreen(Parent));
+    Parent->PopDockTitle();
+    delete Parent->DockMainWidget->currentWidget();
+    delete this;
+}
+void ServicesTable::PriceButtonClicked(Service* IService)
+{
+    Parent->MainWidget->setCurrentIndex
+            (Parent->MainWidget->addWidget(new ServicePriceTable(this, IService, Parent->MainCarIDs, Editable)));
+    Parent->centralWidget()->show();
+    Parent->centralWidget()->setFocus();
 }

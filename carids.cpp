@@ -1,3 +1,5 @@
+#include <QGridLayout>
+
 #include "carids.h"
 #include "utils.h"
 
@@ -36,9 +38,7 @@ void CarIDs::Save()
 }
 void CarIDs::Load()
 {
-    qDebug()<<Brands.size();
     Brands.clear();
-    qDebug()<<Brands.size();
     QFile InputFile(Utils::CARIDS_FILENAME+Utils::FILENAME_EXTENSION);
     InputFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QDomDocument Document;

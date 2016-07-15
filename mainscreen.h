@@ -10,12 +10,9 @@
 
 class MainScreen : public QWidget
 {
-Q_OBJECT;
 public:
     MainScreen(UI* IParent);
     UI* Parent;
-//signals:
-//public slots:
 };
 
 #endif // MAINSCREEN_H

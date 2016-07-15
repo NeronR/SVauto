@@ -1,5 +1,10 @@
 #include "utils.h"
 #include <QMessageBox>
+#include <QButtonGroup>
+#include <QGridLayout>
+#include <QMessageBox>
+
+#include <ui.h>
 
 Utils::Utils()
 {
@@ -132,3 +137,32 @@ const QString Utils::CLOSED_ININVOICES_FOLDER = "ClosedInInvoices/";
 const QString Utils::OPENED_OUTINVOICES_FOLDER = "OutInvoices/";
 const QString Utils::CLOSED_OUTINVOICES_FOLDER = "ClosedOutInvoices/";
 const QString Utils::FILENAME_EXTENSION = ".xml";
+
+
+PickButtonWidget::PickButtonWidget(UI* IParent, QStringList IList) : QWidget(IParent), Parent(IParent)
+{
+    setStyleSheet("QPushButton {font: 18px;}");
+    int Sqrt = std::sqrt(IList.length()) + 1;
+    DockWidget = new QWidget;
+    Group = new QButtonGroup;
+    connect(Group, SIGNAL(buttonClicked(int)), this, SLOT(ClickedSinal(int)));
+    QGridLayout* Layout = new QGridLayout(this);
+    setLayout(Layout);
+    for(int i=0; i<IList.length(); ++i)
+    {
+        QPushButton* Button = new QPushButton(IList[i]);
+        Group->addButton(Button, i);
+        Button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        Layout->addWidget(Button, i/Sqrt, i%Sqrt);
+    }
+    IParent->MainWidget->setCurrentIndex(IParent->MainWidget->addWidget(this));
+    IParent->DockMainWidget->setCurrentIndex(IParent->DockMainWidget->addWidget(DockWidget));
+    IParent->PushDockTitle("");
+}
+void PickButtonWidget::ClickedSinal(int IID)
+{
+    delete DockWidget;
+    Parent->PopDockTitle();
+    emit Clicked(IID);
+    delete this;
+}

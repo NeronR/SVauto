@@ -55,31 +55,35 @@ InTable::InTable(UI* Iparent, InInvoice* IInvoice, bool IEditable) : QTableWidge
         setSortingEnabled(true);
     }
     connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(CellChanged(int,int)));
-    MenuBar = new QMenuBar(this);
-    QAction* CloseAction = new QAction("Назад",MenuBar);
-    connect(CloseAction,SIGNAL(triggered(bool)),Parent,SLOT(ShowMainWindow()));
-    MenuBar->addAction(CloseAction);
+
+    DockWidget = new QWidget;
+    QHBoxLayout* DockLayout = new QHBoxLayout;
+    DockWidget->setLayout(DockLayout);
     if(Invoice->GetApplied())
     {
-        ApplyAction = new QAction("Отменить",MenuBar);
-        connect(ApplyAction, SIGNAL(triggered(bool)),this,SLOT(Deapply()));
+        QPushButton* DeapplyButton = new QPushButton("Отменить");
+        connect(DeapplyButton, SIGNAL(clicked(bool)), this, SLOT(Deapply()));
+        DockLayout->addWidget(DeapplyButton, 0, Qt::AlignLeft);
     }
     else
     {
-        ApplyAction = new QAction("Применить",MenuBar);
-        connect(ApplyAction, SIGNAL(triggered(bool)),this,SLOT(Apply()));
+        QPushButton* ApplyButton = new QPushButton("Применить");
+        connect(ApplyButton, SIGNAL(clicked(bool)), this, SLOT(Apply()));
+        DockLayout->addWidget(ApplyButton, 0, Qt::AlignLeft);
+        QPushButton* DeleteButton = new QPushButton("Удалить");
+        connect(DeleteButton, SIGNAL(clicked(bool)), this, SLOT(Delete()));
+        DockLayout->addWidget(DeleteButton, 0, Qt::AlignLeft);
     }
-    MenuBar->addAction(ApplyAction);
-    if(!Invoice->GetApplied())
-    {
-        QAction* DeleteAction = new QAction("Удалить приход", MenuBar);
-        connect(DeleteAction,SIGNAL(triggered(bool)),this,SLOT(Delete()));
-        MenuBar->addAction(DeleteAction);
-    }
+    DockLayout->addStretch();
     TotalLabel = new QLabel(this);
     TotalLabel->setMinimumWidth(TotalLabel->width());
     TotalLabel->setText(Utils::IntMoneyToString(Invoice->GetTotal()));
-    MenuBar->setCornerWidget(TotalLabel);
+    DockLayout->addWidget(TotalLabel, 0, Qt::AlignRight);
+    QPushButton* CloseButton = new QPushButton("Назад");
+    connect(CloseButton, SIGNAL(clicked(bool)), this, SLOT(Close()));
+    DockLayout->addWidget(CloseButton, 0, Qt::AlignRight);
+    Parent->DockMainWidget->setCurrentIndex(Parent->DockMainWidget->addWidget(DockWidget));
+    Parent->PushDockTitle("Приход #" + Invoice->GetID());
 }
 void InTable::Add(int IIndex)
 {
@@ -138,7 +142,7 @@ void InTable::Apply()
         Invoice->SetDate(QDateTime::currentDateTime());
         Invoice->Save(Utils::CLOSED_ININVOICES_FOLDER);
         QMessageBox::about(0,"OK","Приход учтен");
-        Parent->ShowMainWindow();
+        Close();
     }
 }
 void InTable::Deapply()
@@ -155,11 +159,11 @@ void InTable::Deapply()
         QFile DeletingFile("ClosedInInvoices/"+Invoice->GetID()+".xml");
         if(DeletingFile.exists())
             DeletingFile.remove();
-        Parent->MainStorage->Save("Storage.xml");
+        Parent->MainStorage->Save(Utils::STORAGE_FILENAME + Utils::FILENAME_EXTENSION);
         Invoice->SetDate(QDateTime::currentDateTime());
         Invoice->Save("InInvoices");
         QMessageBox::about(0,"OK","Приход не учтен");
-        Parent->ShowMainWindow();
+        Close();
     }
 }
 void InTable::Delete()
@@ -170,7 +174,7 @@ void InTable::Delete()
                            Utils::FILENAME_EXTENSION);
         if(DeletingFile.exists())
             DeletingFile.remove();
-        Parent->ShowMainWindow();
+        Close();
     }
 }
 void InTable::keyPressEvent(QKeyEvent *event)
@@ -215,4 +219,10 @@ void InTable::CellChanged(int IRow, int IColumn)
             Invoice->Save(Utils::OPENED_ININVOICES_FOLDER);
         }
     }
+}
+void InTable::Close()
+{
+    Parent->PopDockTitle();
+    delete DockWidget;
+    delete this;
 }

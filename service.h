@@ -10,6 +10,7 @@
 //TODO:
 //Add CarID check when adding price
 
+class ServicePriceTable;
 
 class Service
 {
@@ -33,6 +34,7 @@ public:
     void SetPrice(long long ICarID, long long IPrice){Price.insert(ICarID, IPrice);}
     void SetPrice(long long ICarID, QString IPrice)
         {if (Utils::StringIsMoney(IPrice)) Price.insert(ICarID,Utils::StringMoneyToInt(IPrice));}
+    void RemovePrice(long long ICarID) {Price.remove(ICarID);}
     void SetDescription(QString IDescription) {Description = IDescription;}
 
     QDomElement ToXML(QDomDocument* IDocument);
@@ -42,6 +44,8 @@ private:
     QString Barcode;
     QMap<long long int, long long int> Price;
     QString Description;
+
+    friend ServicePriceTable;
 };
 
 #endif // SERVICE_H

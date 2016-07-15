@@ -37,7 +37,9 @@ void Services::Save(QString IFileName)
 
     Root.setAttribute(Utils::XML_LAST_ID_TAG, LastID);
     for(int i=0; i<ServiceList.length(); ++i)
+    {
         Root.appendChild(ServiceList[i].ToXML(&Document));
+    }
 
     QFile OutputFile(IFileName);
     OutputFile.open(QIODevice::WriteOnly | QIODevice::Text);

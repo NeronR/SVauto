@@ -1,7 +1,9 @@
 #include "outlisttable.h"
 #include "outtable.h"
+
 #include <QMessageBox>
 #include <QHeaderView>
+#include <QHBoxLayout>
 
 OutListTable::OutListTable(UI* IParent, OutInvoiceList* IList) : QTableWidget(IParent), Parent(IParent),
     List(IList)
@@ -36,15 +38,25 @@ OutListTable::OutListTable(UI* IParent, OutInvoiceList* IList) : QTableWidget(IP
     setSortingEnabled(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     connect(this,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(CellDoubleClick(int)));
-    MenuBar = new QMenuBar(this);
-    QAction* CloseAction = new QAction("Назад", MenuBar);
-    connect(CloseAction,SIGNAL(triggered(bool)),Parent,SLOT(ShowMainWindow()));
-    MenuBar->addAction(CloseAction);
+
+    DockWidget = new QWidget;
+    QHBoxLayout* DockLayout = new QHBoxLayout(DockWidget);
+    QPushButton* CloseButton = new QPushButton("Назад");
+    connect(CloseButton, SIGNAL(clicked(bool)), this, SLOT(Close()));
+    DockLayout->addWidget(CloseButton, 0, Qt::AlignRight);
+    Parent->PushDockTitle("Список приходов");
+    Parent->DockMainWidget->setCurrentIndex(Parent->DockMainWidget->addWidget(DockWidget));
 }
 void OutListTable::CellDoubleClick(int IRow)
 {
-    Parent->setCentralWidget(new OutTable(Parent, new OutInvoice(item(IRow,IDColumnNumber)->text()), true));
+    //Parent->setCentralWidget(new OutTable(Parent, new OutInvoice(item(IRow,IDColumnNumber)->text()), true));
+    Parent->MainWidget->addWidget(new OutTable(Parent, new OutInvoice(item(IRow,IDColumnNumber)->text()), true));
     Parent->centralWidget()->show();
     Parent->centralWidget()->setFocus();
-    Parent->setMenuBar(((OutTable*)Parent->centralWidget())->MenuBar);
+}
+void OutListTable::Close()
+{
+    Parent->PopDockTitle();
+    delete DockWidget;
+    delete this;
 }

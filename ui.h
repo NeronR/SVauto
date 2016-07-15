@@ -19,7 +19,7 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 #include <QWidget>
-#include <QMenuBar>
+#include <QStack>
 
 class StorageTable;
 class InTable;
@@ -29,18 +29,23 @@ class UI : public QMainWindow
 Q_OBJECT
 public:
     explicit UI(QWidget *parent = 0);
+    QStackedWidget* MainWidget;
+    QDockWidget* DockWidget;
+    QStackedWidget* DockMainWidget;
     Storage* MainStorage;
     Services* MainServices;
     InInvoiceList* InList;
     InInvoiceList* InClosedList;
     OutInvoiceList* OutList;
     OutInvoiceList* OutClosedList;
-    QMenuBar* MenuBar;
+    CarIDs* MainCarIDs;
     static bool OKCancelWindow (QString ITitle = "", QString IText = "");
     void closeEvent(QCloseEvent *);
 
     User* CurrentUser;
     Settings* PSettings;
+private:
+    QStack<QString> DockTitleStack;
 public slots:
     void ShowMainWindow();
     void ShowStorageTable();
@@ -54,6 +59,8 @@ public slots:
     void ShowOutListTable();
     void ShowOutClosedListTable();
     void ShowSettingsWidget();
+    void PushDockTitle(QString ITitle);
+    void PopDockTitle();
 };
 
 #endif // UI_H

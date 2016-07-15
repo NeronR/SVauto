@@ -2,6 +2,12 @@
 #define UTILS_H
 
 #include <QString>
+#include <QList>
+#include <QWidget>
+#include <QButtonGroup>
+
+class PickButtonWidget;
+class UI;
 
 class Utils
 {
@@ -48,6 +54,22 @@ public:
     static const QString OPENED_OUTINVOICES_FOLDER;
     static const QString CLOSED_OUTINVOICES_FOLDER;
     static const QString FILENAME_EXTENSION;
+};
+
+class PickButtonWidget : public QWidget
+{
+    Q_OBJECT
+private:
+    UI* Parent;
+    QButtonGroup* Group;
+    QWidget* DockWidget;
+public:
+    PickButtonWidget(UI* IParent, QStringList IList);
+    ~PickButtonWidget() {delete Group;}
+private slots:
+    void ClickedSinal(int IID);
+signals:
+    void Clicked(int);
 };
 
 #endif // UTILS_H

@@ -3,11 +3,27 @@
 
 #include "services.h"
 #include "ui.h"
+#include "servicepricetable.h"
 
 #include <QTableWidget>
-#include <QMenuBar>
+#include <QPushButton>
 
 class UI;
+
+class ServicePointerButton : public QObject
+{
+    Q_OBJECT
+public:
+    ServicePointerButton(QString IText, Service* IPointer) : Button(new QPushButton(IText)), Pointer(IPointer)
+    {connect(Button, SIGNAL(clicked(bool)), this, SLOT(Clicked()));}
+    ~ServicePointerButton() {delete Button;}
+    QPushButton* Button;
+    Service* Pointer;
+private slots:
+    void Clicked() {emit Clicked(Pointer);}
+signals:
+    void Clicked(Service*);
+};
 
 class ServicesTable : public QTableWidget
 {
@@ -16,7 +32,6 @@ public:
     ServicesTable(UI* IParent, bool IEditable = false);
     ~ServicesTable();
     void keyPressEvent(QKeyEvent* event);
-    QMenuBar* MenuBar;
 private:
     Services* MainServices;
     UI* Parent;
@@ -33,6 +48,9 @@ private slots:
     void Remove(int IRow);
     void RemoveCurrent();
     void Close();
+    void PriceButtonClicked(Service* IService);
+
+    friend ServicePriceTable;
 };
 
 #endif // SERVICESTABLE_H

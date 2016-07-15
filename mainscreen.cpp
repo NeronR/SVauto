@@ -8,26 +8,42 @@ MainScreen::MainScreen(UI* IParent) : QWidget(IParent), Parent (IParent)
     setStyleSheet("QPushButton {font: 18px;}");
     if(!parent())
        QMessageBox::about(0, "ERROR!", "No parent in MainScreen");
-
     QVBoxLayout* Layout = new QVBoxLayout(this);
-    QHBoxLayout* StorageLayout = new QHBoxLayout(0);
+
+    QHBoxLayout* StorageLayout = new QHBoxLayout();
     if(true)
     {
         QPushButton* StorageButton = new QPushButton("Просмотреть список товаров", this);
         StorageButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        StorageLayout->addWidget(StorageButton);
+        StorageLayout->addWidget(StorageButton, 5);
         connect(StorageButton,SIGNAL(clicked(bool)),Parent,SLOT(ShowStorageTable()));
-        StorageLayout->setStretchFactor(StorageButton, 5);
     }
     if(true)
     {
         QPushButton* StorageEditButton = new QPushButton("Редактировать", this);
         StorageEditButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        StorageLayout->addWidget(StorageEditButton);
+        StorageLayout->addWidget(StorageEditButton, 1);
         connect(StorageEditButton,SIGNAL(clicked(bool)),Parent,SLOT(ShowEditStorageTable()));
-        StorageLayout->setStretchFactor(StorageEditButton, 1);
     }
     Layout->addLayout(StorageLayout);
+
+    QHBoxLayout* ServicesLayout = new QHBoxLayout();
+    if(true)
+    {
+        QPushButton* ServicesButton = new QPushButton("Просмотреть список услуг", this);
+        ServicesButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        ServicesLayout->addWidget(ServicesButton, 5);
+        connect(ServicesButton,SIGNAL(clicked(bool)),Parent,SLOT(ShowServicesTable()));
+    }
+    if(true)
+    {
+        QPushButton* ServicesEditButton = new QPushButton("Редактировать", this);
+        ServicesEditButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        ServicesLayout->addWidget(ServicesEditButton, 1);
+        connect(ServicesEditButton,SIGNAL(clicked(bool)),Parent,SLOT(ShowEditServicesTable()));
+    }
+    Layout->addLayout(ServicesLayout);
+
     if(true)
     {
         QPushButton* InButton = new QPushButton("Новый приход", this);
