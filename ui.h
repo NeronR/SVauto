@@ -14,6 +14,7 @@
 #include "user.h"
 #include "settings.h"
 #include "carids.h"
+#include "orderlist.h"
 
 #include <QTableWidget>
 #include <QMainWindow>
@@ -38,6 +39,7 @@ public:
     InInvoiceList* InClosedList;
     OutInvoiceList* OutList;
     OutInvoiceList* OutClosedList;
+    OrderList* MainOrderList;
     CarIDs* MainCarIDs;
     static bool OKCancelWindow (QString ITitle = "", QString IText = "");
     void closeEvent(QCloseEvent *);

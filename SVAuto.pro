@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     servicestable.cpp \
     servicepricetable.cpp \
     mainwindow.cpp \
-    carstable.cpp
+    carstable.cpp \
+    orderlist.cpp
 
 HEADERS  += \
     ui.h \
@@ -60,4 +61,5 @@ HEADERS  += \
     servicestable.h \
     servicepricetable.h \
     mainwindow.h \
-    carstable.h
+    carstable.h \
+    orderlist.h

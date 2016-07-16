@@ -17,16 +17,19 @@ public:
     int ServiceSize() {return ServiceList.length();}
     void Load(QString IFolder);
     void Save(QString IFolder);
+    int SearchItemByID(QString IID);
+    int SearchServiceByID(QString IID);
+    OutItem GetItem(int IIndex) {return ItemList[IIndex];}
+    OutItem GetService(int IIndex) {return ServiceList[IIndex];}
     void SetDate(QDateTime IDateTime) {DateTime = IDateTime;}
     void SetState(State IState) {CurrentState = IState;}
     QString GetID() {return ID;}
     long long GetTotal() {return Total;}
     QString ReturnTotalString() {return Utils::IntMoneyToString(Total);}
-    void RecalculateTotal();
+    long long RecalculateTotal();
     QString GetDateString() {return DateTime.toString(Utils::DATETIME_VISIBLE_FORMAT);}
     State GetState() {return CurrentState;}
 private:
-    UI* Parent;
     QList<OutItem> ItemList;
     QList<OutItem> ServiceList;
     QString ID;

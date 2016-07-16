@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QDebug>
 
 Order::Order(QString IID) : ID(IID), Total(0), DateTime(QDateTime::currentDateTime()), CurrentState(State::NEGOTIATION)
 {
@@ -38,13 +39,15 @@ void Order::Load(QString IFolder)
     QDomElement Element;
     while(!Node.isNull())
     {
-        if(!((Element = Node.toElement()).isNull()) && Element.tagName()==Utils::XML_OUT_ITEM_TAG)
+        if(!(Element = Node.toElement()).isNull())
         {
             OutItem NewItem(&Element);
-            if(NewItem.GetType() == Utils::OUTITEM_ITEM_TYPE)
+            if(Element.tagName()==Utils::XML_STORAGE_ITEM_TAG)
                 AddItem(NewItem);
-            else
+            else if(Element.tagName()==Utils::XML_SERVICE_TAG)
                 AddService(NewItem);
+            else
+                QMessageBox::about(0,"ERROR!","NOT XML_STORAGE_ITEM_TAG OR XML_SERVICE_TAG");
         }
         else
             QMessageBox::about(0,"ERROR!","NOT XML_OUT_ITEM_TAG");
@@ -61,13 +64,48 @@ void Order::Save(QString IFolder)
     Document.appendChild(Root);
 
     for(int i=0; i<ItemList.length(); ++i)
-        Root.appendChild(ItemList[i].ToXML(&Document));
+    {
+        QDomElement Appending = ItemList[i].ToXML(&Document);
+        Appending.setTagName(Utils::XML_STORAGE_ITEM_TAG);
+        Root.appendChild(Appending);
+    }
     for(int i=0; i<ServiceList.length(); ++i)
-        Root.appendChild(ServiceList[i].ToXML(&Document));
+    {
+        QDomElement Appending = ServiceList[i].ToXML(&Document);
+        Appending.setTagName(Utils::XML_SERVICE_TAG);
+        Root.appendChild(Appending);
+    }
 
     QFile OutputFile(IFolder+"/"+ID+Utils::FILENAME_EXTENSION);
     OutputFile.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream OutStream(&OutputFile);
     OutStream << Document.toString();
     OutputFile.close();
+}
+int Order::SearchItemByID(QString IID)
+{
+    for(int i=0; i<ItemList.size(); ++i)
+    {
+        if(ItemList[i].GetID()==IID)
+            return i;
+    }
+    return -1;
+}
+int Order::SearchServiceByID(QString IID)
+{
+    for(int i=0; i<ServiceList.size(); ++i)
+    {
+        if(ServiceList[i].GetID()==IID)
+            return i;
+    }
+    return -1;
+}
+long long Order::RecalculateTotal()
+{
+    Total = 0;
+    for(int i=0; i<ItemList.size(); ++i)
+        Total += ItemList[i].GetPrice() * ItemList[i].GetQuantity();
+    for(int i=0; i<ServiceList.size(); ++i)
+        Total += ServiceList[i].GetPrice() * ItemList[i].GetQuantity();
+    return Total;
 }

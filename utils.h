@@ -39,9 +39,6 @@ public:
     static const QString XML_DATE_TAG;
     static const QString XML_APPLIED_TAG;
     static const QString XML_STATE_TAG;
-    static const QString XML_TYPE_TAG;
-    static const bool OUTITEM_ITEM_TYPE;
-    static const bool OUTITEM_SERVICE_TYPE;
     static const QString XML_LAST_ID_TAG;
     static const QString XML_SERVICE_TAG;
     static const long long int CAR_MAX_ID;

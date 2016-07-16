@@ -28,17 +28,15 @@ UI::UI(QWidget *parent) : QMainWindow(parent)
     CurrentUser = new User("Иван", "Иванович", "Иванов", "333");
     CurrentUser->SetPermission(User::PERMISSION_EDIT_CLOSED_INIVOICES, true);
     PSettings = new Settings("Settings.xml");
-
     MainStorage = new Storage(Utils::STORAGE_FILENAME + Utils::FILENAME_EXTENSION);
     MainServices = new Services(Utils::SERVICES_FILENAME + Utils::FILENAME_EXTENSION);
-
     InList = new InInvoiceList(Utils::OPENED_ININVOICES_FOLDER);
     InClosedList = new InInvoiceList(Utils::CLOSED_ININVOICES_FOLDER);
     OutList = new OutInvoiceList(Utils::OPENED_OUTINVOICES_FOLDER);
     OutClosedList = new OutInvoiceList(Utils::CLOSED_OUTINVOICES_FOLDER);
-
     MainCarIDs = new CarIDs;
     MainCarIDs->Load();
+    MainOrderList = new OrderList(Utils::ORDERS_FOLDER);
 
     DockWidget = new QDockWidget("", this);
     DockWidget->setAllowedAreas(Qt::TopDockWidgetArea);
