@@ -82,6 +82,8 @@ void CarIDs::Load()
         }
         NodeBrand = NodeBrand.nextSibling();
     }
+    if(Brands.isEmpty())
+        AddBrand("All", true);
 }
 
 const short CarIDs::BRAND_ID_NUMBERS = 3;

@@ -159,6 +159,6 @@ void ServicesTable::PriceButtonClicked(Service* IService)
 {
     Parent->MainWidget->setCurrentIndex
             (Parent->MainWidget->addWidget(new ServicePriceTable(this, IService, Parent->MainCarIDs, Editable)));
-    Parent->centralWidget()->show();
-    Parent->centralWidget()->setFocus();
+    Parent->MainWidget->currentWidget()->show();
+    Parent->MainWidget->currentWidget()->setFocus();
 }

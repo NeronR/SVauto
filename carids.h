@@ -59,6 +59,17 @@ public:
         NewVersion.Name = IName;
         Brands.at(BrandID).Models->at(ModelID).Versions->append(NewVersion);
     }
+    void Rename(long IBrandID, long IModelID, long IVersionID, QString IName)
+    {
+        if(IBrandID < 0)
+            return;
+        else if(IModelID < 0)
+            (Brands.operator [](IBrandID)).Name = IName;
+        else if(IVersionID < 0)
+            ((Brands.operator [](IBrandID)).Models->operator [](IModelID)).Name = IName;
+        else
+            (((Brands.operator [](IBrandID)).Models->operator [](IModelID)).Versions->operator [](IVersionID)).Name = IName;
+    }
     QStringList GetBrands()
     {
         QStringList OutList;
@@ -104,6 +115,52 @@ public:
             Answer = "0" + Answer;
         return Answer;
     }
+    static QString IntBrandIDToString(long IBrandID)
+    {
+        QString Answer = QString::number(IBrandID);
+        while(Answer.size() < BRAND_ID_NUMBERS)
+            Answer = "0" + Answer;
+        return Answer;
+    }
+    static QString IntModelIDToString(long IModelID)
+    {
+        QString Answer = QString::number(IModelID);
+        while(Answer.size() < MODEL_ID_NUMBERS)
+            Answer = "0" + Answer;
+        return Answer;
+    }
+    static QString IntVersionIDToString(long IVersionID)
+    {
+        QString Answer = QString::number(IVersionID);
+        while(Answer.size() < VERSION_ID_NUMBERS)
+            Answer = "0" + Answer;
+        return Answer;
+    }
+    static long StringIDToBrandID(QString IBrandID)
+    {
+        if(IBrandID.length() < BRAND_ID_NUMBERS) return -1;
+        QString Answer;
+        for(int i=0; i<BRAND_ID_NUMBERS; ++i)
+            Answer += IBrandID[i];
+        return Answer.toLong();
+    }
+    static long StringIDToModelID(QString IModelID)
+    {
+        if(IModelID.length() < BRAND_ID_NUMBERS + MODEL_ID_NUMBERS) return -1;
+        QString Answer;
+        for(int i=BRAND_ID_NUMBERS; i<BRAND_ID_NUMBERS + MODEL_ID_NUMBERS; ++i)
+            Answer += IModelID[i];
+        return Answer.toLong();
+    }
+    static long StringIDToVersionID(QString IVersionID)
+    {
+        if(IVersionID.length() < BRAND_ID_NUMBERS + MODEL_ID_NUMBERS + VERSION_ID_NUMBERS) return -1;
+        QString Answer;
+        for(int i=BRAND_ID_NUMBERS + MODEL_ID_NUMBERS; i<BRAND_ID_NUMBERS + MODEL_ID_NUMBERS + VERSION_ID_NUMBERS; ++i)
+            Answer += IVersionID[i];
+        return Answer.toLong();
+    }
+
     CarName GetCarNameByStringID(QString ICarID)
     {
         QString BrandID, ModelID, VersionID;

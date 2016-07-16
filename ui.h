@@ -58,6 +58,7 @@ public slots:
     void ShowInClosedListTable();
     void ShowOutListTable();
     void ShowOutClosedListTable();
+    void ShowCarsTable();
     void ShowSettingsWidget();
     void PushDockTitle(QString ITitle);
     void PopDockTitle();

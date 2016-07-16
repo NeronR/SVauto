@@ -54,8 +54,8 @@ void InListTable::CellDoubleClick(int IRow)
     InTable* Table = new InTable(Parent, new InInvoice(item(IRow,IDColumnNumber)->text()), true);
     connect(Table, SIGNAL(Closing()), this, SLOT(Update()));
     Parent->MainWidget->setCurrentIndex(Parent->MainWidget->addWidget(Table));
-    Parent->centralWidget()->show();
-    Parent->centralWidget()->setFocus();
+    Parent->MainWidget->currentWidget()->show();
+    Parent->MainWidget->currentWidget()->setFocus();
 }
 void InListTable::Update()
 {

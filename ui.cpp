@@ -18,6 +18,7 @@
 #include "outlisttable.h"
 #include "outtable.h"
 #include "user.h"
+#include "carstable.h"
 
 UI::UI(QWidget *parent) : QMainWindow(parent)
 {
@@ -54,74 +55,75 @@ UI::UI(QWidget *parent) : QMainWindow(parent)
 void UI::ShowMainWindow()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new MainScreen(this)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
     DockWidget->setWindowTitle("");
-
-    //InList->Load("InInvoices");
-    //InClosedList->Load("ClosedInInvoices");
-    //OutList->Load(Utils::OPENED_OUTINVOICES_FOLDER);
-    //OutClosedList->Load(Utils::CLOSED_OUTINVOICES_FOLDER);
 }
 void UI::ShowStorageTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new StorageTable(this, false)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowEditStorageTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new StorageTable(this, true)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowServicesTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new ServicesTable(this, false)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowEditServicesTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new ServicesTable(this, true)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowInTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new InTable(this, 0, true)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowOutTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new OutTable(this, 0, true)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowInListTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new InListTable(this)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowInClosedListTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new InListTable(this, InClosedList)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowOutListTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new OutListTable(this)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowOutClosedListTable()
 {
     MainWidget->setCurrentIndex(MainWidget->addWidget(new OutListTable(this, OutClosedList)));
-    centralWidget()->show();
-    centralWidget()->setFocus();
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
+}
+void UI::ShowCarsTable()
+{
+    MainWidget->setCurrentIndex(MainWidget->addWidget(new CarsTable(this, MainCarIDs)));
+    MainWidget->currentWidget()->show();
+    MainWidget->currentWidget()->setFocus();
 }
 void UI::ShowSettingsWidget()
 {}

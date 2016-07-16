@@ -53,8 +53,8 @@ void OutListTable::CellDoubleClick(int IRow)
     OutTable* Table = new OutTable(Parent, new OutInvoice(item(IRow,IDColumnNumber)->text()), true);
     connect(Table, SIGNAL(Closing()), this, SLOT(Update()));
     Parent->MainWidget->setCurrentIndex(Parent->MainWidget->addWidget(Table));
-    Parent->centralWidget()->show();
-    Parent->centralWidget()->setFocus();
+    Parent->MainWidget->currentWidget()->show();
+    Parent->MainWidget->currentWidget()->setFocus();
 }
 void OutListTable::Update()
 {

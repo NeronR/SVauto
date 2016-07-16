@@ -85,6 +85,13 @@ MainScreen::MainScreen(UI* IParent) : QWidget(IParent), Parent (IParent)
     }
     if(true)
     {
+        QPushButton* CarsButton = new QPushButton("Автомобили", this);
+        CarsButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        Layout->addWidget(CarsButton, 5, 4, 1, 1);
+        connect(CarsButton, SIGNAL(clicked(bool)), Parent, SLOT(ShowCarsTable()));
+    }
+    if(true)
+    {
         QPushButton* SettingsButton = new QPushButton("Настройки", this);
         SettingsButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         Layout->addWidget(SettingsButton, 5, 5, 1, 1);
