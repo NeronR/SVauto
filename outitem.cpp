@@ -15,6 +15,10 @@ OutItem::OutItem(QDomElement *IElement)
             Quantity = IElement->attribute(Utils::XML_QUANTITY_TAG).toInt();
         if(IElement->hasAttribute(Utils::XML_SELLING_PRICE_TAG))
             Price = Utils::StringMoneyToInt(IElement->attribute(Utils::XML_SELLING_PRICE_TAG));
+        if(IElement->hasAttribute(Utils::XML_TYPE_TAG))
+            Type = Utils::StringToBool(IElement->attribute(Utils::XML_TYPE_TAG));
+        else
+            Type = false;
     }
 }
 QDomElement OutItem::ToXML(QDomDocument *IDocument)
@@ -24,6 +28,7 @@ QDomElement OutItem::ToXML(QDomDocument *IDocument)
     Element.setAttribute(Utils::XML_NAME_TAG, Name);
     Element.setAttribute(Utils::XML_QUANTITY_TAG, QString::number(Quantity));
     Element.setAttribute(Utils::XML_SELLING_PRICE_TAG, Utils::IntMoneyToString(Price));
+    Element.setAttribute(Utils::XML_TYPE_TAG, Utils::BoolToString(Type));
     return Element;
 }
 

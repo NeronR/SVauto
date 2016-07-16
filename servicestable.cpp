@@ -108,7 +108,6 @@ void ServicesTable::CellChanged(int IRow, int IColumn)
                 QMessageBox::about(0,"WARNING","Услуга с таким штрих-кодом уже существует");
             item(IRow,IColumn)->setText(TargetItem->GetBarcode());
         }
-        qDebug()<<MainServices;
         MainServices->Save(Utils::SERVICES_FILENAME + Utils::FILENAME_EXTENSION);
         connect(this,SIGNAL(cellChanged(int,int)),this,SLOT(CellChanged(int,int)));
     }

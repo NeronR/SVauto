@@ -75,7 +75,6 @@ CarsTable::CarsTable(UI* IParent, CarIDs* ICarIDs, long int IBrandID, long int I
         TitlePostfix = " " + MainCarIDs->GetBrands().at(BrandID);
     if(ModelID > -1)
         TitlePostfix += " " + MainCarIDs->GetModels(BrandID).at(ModelID);
-    qDebug()<<TitlePostfix;
     Parent->PushDockTitle("Список автомобилей" + TitlePostfix);
     Parent->DockMainWidget->setCurrentIndex(Parent->DockMainWidget->addWidget(DockWidget));
 }

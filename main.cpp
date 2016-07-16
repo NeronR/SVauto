@@ -19,6 +19,8 @@ int main(int argc, char *argv[])
         QDir().mkdir(Utils::OPENED_OUTINVOICES_FOLDER);
     if(!QDir(Utils::CLOSED_OUTINVOICES_FOLDER).exists())
         QDir().mkdir(Utils::CLOSED_OUTINVOICES_FOLDER);
+    if(!QDir(Utils::ORDERS_FOLDER).exists())
+        QDir().mkdir(Utils::ORDERS_FOLDER);
 
     a.setStyleSheet("QPushButton {"
                     "background-color: rgb(230,230,230);"

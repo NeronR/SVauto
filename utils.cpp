@@ -121,12 +121,17 @@ const QString Utils::XML_SELLING_PRICE_TAG = "price2";
 const QString Utils::XML_DESCRIPTION_TAG = "description";
 const QString Utils::XML_DATE_TAG = "date";
 const QString Utils::XML_APPLIED_TAG = "applied";
+const QString Utils::XML_STATE_TAG = "state";
+const QString Utils::XML_TYPE_TAG = "type";
+const bool Utils::OUTITEM_ITEM_TYPE = false;
+const bool Utils::OUTITEM_SERVICE_TYPE = true;
 const QString Utils::XML_LAST_ID_TAG = "last_id";
 const QString Utils::XML_SERVICE_TAG = "service";
 const long long int Utils::CAR_MAX_ID = 9999999;
 const QString Utils::XML_BRAND_TAG = "brand";
 const QString Utils::XML_MODEL_TAG = "model";
 const QString Utils::XML_VERSION_TAG = "version";
+const QString Utils::XML_SERVICE_NODE_TAG = "service_node";
 const QString Utils::DATETIME_FORMAT = "yyyy_MM_dd_hh_mm_ss";
 const QString Utils::DATETIME_VISIBLE_FORMAT = "yyyy.MM.dd hh.mm.ss";
 const QString Utils::STORAGE_FILENAME = "Storage";
@@ -136,6 +141,7 @@ const QString Utils::OPENED_ININVOICES_FOLDER = "InInvoices/";
 const QString Utils::CLOSED_ININVOICES_FOLDER = "ClosedInInvoices/";
 const QString Utils::OPENED_OUTINVOICES_FOLDER = "OutInvoices/";
 const QString Utils::CLOSED_OUTINVOICES_FOLDER = "ClosedOutInvoices/";
+const QString Utils::ORDERS_FOLDER = "Orders/";
 const QString Utils::FILENAME_EXTENSION = ".xml";
 
 

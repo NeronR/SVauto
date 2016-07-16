@@ -38,12 +38,17 @@ public:
     static const QString XML_DESCRIPTION_TAG;
     static const QString XML_DATE_TAG;
     static const QString XML_APPLIED_TAG;
+    static const QString XML_STATE_TAG;
+    static const QString XML_TYPE_TAG;
+    static const bool OUTITEM_ITEM_TYPE;
+    static const bool OUTITEM_SERVICE_TYPE;
     static const QString XML_LAST_ID_TAG;
     static const QString XML_SERVICE_TAG;
     static const long long int CAR_MAX_ID;
     static const QString XML_BRAND_TAG;
     static const QString XML_MODEL_TAG;
     static const QString XML_VERSION_TAG;
+    static const QString XML_SERVICE_NODE_TAG;
     static const QString DATETIME_FORMAT;
     static const QString DATETIME_VISIBLE_FORMAT;
     static const QString STORAGE_FILENAME;
@@ -53,6 +58,7 @@ public:
     static const QString CLOSED_ININVOICES_FOLDER;
     static const QString OPENED_OUTINVOICES_FOLDER;
     static const QString CLOSED_OUTINVOICES_FOLDER;
+    static const QString ORDERS_FOLDER;
     static const QString FILENAME_EXTENSION;
 };
 
